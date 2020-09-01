@@ -389,6 +389,12 @@ module.exports = function(crowi) {
     }));
   };
 
+  pageSchema.methods.countLikers = function(id) {
+    const result = this.liker.count();
+    console.log(result);
+    return result;
+  };
+
   pageSchema.methods.isSeenUser = function(userData) {
     return this.seenUsers.includes(userData._id);
   };
