@@ -196,6 +196,20 @@ module.exports = (crowi) => {
     return res.apiv3({ result });
   });
 
+  router.get('/likeInfo', async(req, res) => {
+    const pageId = req.query._id;
+    const likeInfo = {};
+    try {
+      const page = await Page.findById(pageId);
+      likeInfo.sumOfLikers = page.liker.length;
+      likeInfo.userIdsStr = page.liker;
+      return res.apiv3({ likeInfo });
+    }
+    catch (err) {
+      logger.error('error like info', err);
+    }
+  });
+
   /**
   * @swagger
   *
