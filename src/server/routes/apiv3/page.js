@@ -200,9 +200,9 @@ module.exports = (crowi) => {
     const pageId = req.query._id;
     const likeInfo = {};
     try {
-      const page = await Page.findById(pageId);
-      likeInfo.sumOfLikers = page.liker.length;
-      likeInfo.userIdsStr = page.liker;
+      likeInfo.users = await Page.findById(pageId).populate('liker', User.USER_PUBLIC_FIELDS);
+      likeInfo.sumOfLikers = likeInfo.users.liker.length;
+
       return res.apiv3({ likeInfo });
     }
     catch (err) {
