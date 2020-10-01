@@ -266,7 +266,7 @@ module.exports = (crowi) => {
       return res.apiv3({ overlappingPath });
     }
     catch (err) {
-      logger.error('Failed to get overlap path', err);
+      logger.error('Failed to get overlapping path', err);
       return res.apiv3Err(err, 500);
     }
 
