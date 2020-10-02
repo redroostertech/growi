@@ -21,10 +21,12 @@ const ErrorV3 = require('../../models/vo/error-apiv3');
  *
  *  components:
  *    schemas:
- *      CustomizeTheme:
- *        description: CustomizeTheme
+ *      CustomizeLayoutTheme:
+ *        description: CustomizeLayoutTheme
  *        type: object
  *        properties:
+ *          layoutType:
+ *            type: string
  *          themeType:
  *            type: string
  *      CustomizeFunction:
@@ -90,9 +92,10 @@ module.exports = (crowi) => {
         'default', 'nature', 'mono-blue', 'wood', 'island', 'christmas', 'antarctic', 'future', 'halloween', 'spring',
       ]),
     ],
-    theme: [
+    layoutTheme: [
+      body('layoutType').isString().isIn(['growi', 'kibela']),
       body('themeType').isString().isIn([
-        'default', 'nature', 'mono-blue', 'wood', 'island', 'christmas', 'antarctic', 'future', 'halloween', 'spring', 'kibela',
+        'default', 'nature', 'mono-blue', 'wood', 'island', 'christmas', 'antarctic', 'future', 'halloween', 'spring',
       ]),
     ],
     function: [
@@ -168,12 +171,12 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /customize-setting/theme/asset-path:
+   *    /customize-setting/layout-theme/asset-path:
    *      put:
    *        tags: [CustomizeSetting]
-   *        operationId: getThemeAssetPath
-   *        summary: /customize-setting/theme/asset-path
-   *        description: Get theme asset path
+   *        operationId: getLayoutThemeAssetPath
+   *        summary: /customize-setting/layout-theme/asset-path
+   *        description: Get layout theme asset path
    *        parameters:
    *          - name: themeName
    *            in: query
@@ -182,7 +185,7 @@ module.exports = (crowi) => {
    *              type: string
    *        responses:
    *          200:
-   *            description: Succeeded to get theme asset path
+   *            description: Succeeded to update layout and theme
    *            content:
    *              application/json:
    *                schema:
@@ -190,8 +193,8 @@ module.exports = (crowi) => {
    *                    assetPath:
    *                      type: string
    */
-  router.get('/theme/asset-path', loginRequiredStrictly, adminRequired, validator.themeAssetPath, apiV3FormValidator, async(req, res) => {
-    const { themeName } = req.query;
+  router.get('/layout-theme/asset-path', loginRequiredStrictly, adminRequired, validator.themeAssetPath, apiV3FormValidator, async(req, res) => {
+    const themeName = req.query.themeName;
 
     const webpackAssetKey = `styles/theme-${themeName}.css`;
     const assetPath = res.locals.webpack_asset(webpackAssetKey);
@@ -206,42 +209,44 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /customize-setting/theme:
+   *    /customize-setting/layout-theme:
    *      put:
    *        tags: [CustomizeSetting]
-   *        operationId: updateThemeCustomizeSetting
-   *        summary: /customize-setting/theme
-   *        description: Update theme
+   *        operationId: updateLayoutThemeCustomizeSetting
+   *        summary: /customize-setting/layout-theme
+   *        description: Update layout and theme
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/CustomizeTheme'
+   *                $ref: '#/components/schemas/CustomizeLayoutTheme'
    *        responses:
    *          200:
-   *            description: Succeeded to update theme
+   *            description: Succeeded to update layout and theme
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/CustomizeTheme'
+   *                  $ref: '#/components/schemas/CustomizeLayoutTheme'
    */
-  router.put('/theme', loginRequiredStrictly, adminRequired, csrf, validator.theme, apiV3FormValidator, async(req, res) => {
+  router.put('/layout-theme', loginRequiredStrictly, adminRequired, csrf, validator.layoutTheme, apiV3FormValidator, async(req, res) => {
     const requestParams = {
+      'customize:layout': req.body.layoutType,
       'customize:theme': req.body.themeType,
     };
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const customizedParams = {
+        layoutType: await crowi.configManager.getConfig('crowi', 'customize:layout'),
         themeType: await crowi.configManager.getConfig('crowi', 'customize:theme'),
       };
       return res.apiv3({ customizedParams });
     }
     catch (err) {
-      const msg = 'Error occurred in updating theme';
+      const msg = 'Error occurred in updating layout and theme';
       logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-theme-failed'));
+      return res.apiv3Err(new ErrorV3(msg, 'update-layoutTheme-failed'));
     }
   });
 

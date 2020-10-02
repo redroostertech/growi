@@ -10,7 +10,7 @@ import { toastError } from '../../../util/apiNotification';
 import toArrayIfNot from '../../../../../lib/util/toArrayIfNot';
 import { withLoadingSppiner } from '../../SuspenseUtils';
 
-import CustomizeLayoutSetting from './CustomizeThemeSetting';
+import CustomizeLayoutSetting from './CustomizeLayoutSetting';
 import CustomizeFunctionSetting from './CustomizeFunctionSetting';
 import CustomizeHighlightSetting from './CustomizeHighlightSetting';
 import CustomizeCssSetting from './CustomizeCssSetting';

@@ -1,13 +1,17 @@
 export default class Linker {
 
   constructor(
-      type = Linker.types.markdownLink,
-      label = '',
-      link = '',
+      type,
+      label,
+      link,
+      isUsePermanentLink = false,
+      permalink = '',
   ) {
     this.type = type;
     this.label = label;
     this.link = link;
+    this.isUsePermanentLink = isUsePermanentLink;
+    this.permalink = permalink;
 
     this.generateMarkdownText = this.generateMarkdownText.bind(this);
   }
@@ -26,15 +30,25 @@ export default class Linker {
   }
 
   generateMarkdownText() {
+    let reshapedLink = this.link;
+
+    if (this.isUsePermanentLink && this.permalink != null) {
+      reshapedLink = this.permalink;
+    }
+
+    if (this.label === '') {
+      this.label = reshapedLink;
+    }
+
     if (this.type === Linker.types.pukiwikiLink) {
-      if (this.label === this.link) return `[[${this.link}]]`;
-      return `[[${this.label}>${this.link}]]`;
+      if (this.label === reshapedLink) return `[[${reshapedLink}]]`;
+      return `[[${this.label}>${reshapedLink}]]`;
     }
     if (this.type === Linker.types.growiLink) {
-      return `[${this.link}]`;
+      return `[${reshapedLink}]`;
     }
     if (this.type === Linker.types.markdownLink) {
-      return `[${this.label}](${this.link})`;
+      return `[${this.label}](${reshapedLink})`;
     }
   }
 
@@ -68,10 +82,15 @@ export default class Linker {
       link = label;
     }
 
+    const isUsePermanentLink = false;
+    const permalink = '';
+
     return new Linker(
       type,
       label,
       link,
+      isUsePermanentLink,
+      permalink,
     );
   }
 

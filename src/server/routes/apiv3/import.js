@@ -8,7 +8,6 @@ const multer = require('multer');
 const express = require('express');
 
 const GrowiArchiveImportOption = require('@commons/models/admin/growi-archive-import-option');
-const ErrorV3 = require('../../models/vo/error-apiv3');
 
 
 const router = express.Router();
@@ -306,25 +305,19 @@ module.exports = (crowi) => {
   router.post('/upload', uploads.single('file'), accessTokenParser, loginRequired, adminRequired, csrf, async(req, res) => {
     const { file } = req;
     const zipFile = importService.getFile(file.filename);
-    let data = null;
 
     try {
-      data = await growiBridgeService.parseZipFile(zipFile);
+      const data = await growiBridgeService.parseZipFile(zipFile);
+
+      // validate with meta.json
+      importService.validate(data.meta);
+
+      return res.apiv3(data);
     }
     catch (err) {
       // TODO: use ApiV3Error
       logger.error(err);
       return res.status(500).send({ status: 'ERROR' });
-    }
-    try {
-      // validate with meta.json
-      importService.validate(data.meta);
-      return res.apiv3(data);
-    }
-    catch {
-      const msg = 'the version of this growi and the growi that exported the data are not met';
-      const varidationErr = 'versions-are-not-met';
-      return res.apiv3Err(new ErrorV3(msg, varidationErr), 500);
     }
   });
 

@@ -147,24 +147,8 @@ class ImportService {
 
     const isImporting = this.currentProgressingStatus != null;
 
-    const zipFileStat = filtered.pop();
-    let isTheSameVersion = false;
-
-    if (zipFileStat != null) {
-      try {
-        this.validate(zipFileStat.meta);
-        isTheSameVersion = true;
-      }
-      catch (err) {
-        isTheSameVersion = false;
-        logger.error('the versions are not met', err);
-      }
-    }
-
-
     return {
-      isTheSameVersion,
-      zipFileStat,
+      zipFileStat: filtered.pop(),
       isImporting,
       progressList: isImporting ? this.currentProgressingStatus.progressList : null,
     };

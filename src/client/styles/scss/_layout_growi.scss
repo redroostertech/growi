@@ -5,7 +5,9 @@
     padding: 0;
   }
 
-  .top-of-table-contents {
+  .liker-and-seenusers {
+    // adjusting position with negative margin
+    height: $grw-nav-main-tab-height;
     line-height: 1.25;
     border-bottom: 1px solid transparent;
 
@@ -14,12 +16,8 @@
 
       .liker-user-count,
       .seen-user-count {
-        font-size: 12px;
-        font-weight: bolder;
+        font-weight: bold;
       }
-    }
-    .cls-1 {
-      isolation: isolate;
     }
   }
 

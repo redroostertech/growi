@@ -23,15 +23,11 @@ export default class AdminAppContainer extends Container {
       siteUrl: '',
       envSiteUrl: '',
       isSetSiteUrl: true,
-      isMailerSetup: false,
       fromAddress: '',
-      transmissionMethod: '',
       smtpHost: '',
       smtpPort: '',
       smtpUser: '',
       smtpPassword: '',
-      sesAccessKeyId: '',
-      sesSecretAccessKey: '',
       region: '',
       customEndpoint: '',
       bucket: '',
@@ -40,6 +36,27 @@ export default class AdminAppContainer extends Container {
       isEnabledPlugins: true,
     };
 
+    this.changeTitle = this.changeTitle.bind(this);
+    this.changeConfidential = this.changeConfidential.bind(this);
+    this.changeGlobalLang = this.changeGlobalLang.bind(this);
+    this.changeFileUpload = this.changeFileUpload.bind(this);
+    this.changeSiteUrl = this.changeSiteUrl.bind(this);
+    this.changeFromAddress = this.changeFromAddress.bind(this);
+    this.changeSmtpHost = this.changeSmtpHost.bind(this);
+    this.changeSmtpPort = this.changeSmtpPort.bind(this);
+    this.changeSmtpUser = this.changeSmtpUser.bind(this);
+    this.changeSmtpPassword = this.changeSmtpPassword.bind(this);
+    this.changeRegion = this.changeRegion.bind(this);
+    this.changeCustomEndpoint = this.changeCustomEndpoint.bind(this);
+    this.changeBucket = this.changeBucket.bind(this);
+    this.changeAccessKeyId = this.changeAccessKeyId.bind(this);
+    this.changeSecretAccessKey = this.changeSecretAccessKey.bind(this);
+    this.changeIsEnabledPlugins = this.changeIsEnabledPlugins.bind(this);
+    this.updateAppSettingHandler = this.updateAppSettingHandler.bind(this);
+    this.updateSiteUrlSettingHandler = this.updateSiteUrlSettingHandler.bind(this);
+    this.updateMailSettingHandler = this.updateMailSettingHandler.bind(this);
+    this.updateAwsSettingHandler = this.updateAwsSettingHandler.bind(this);
+    this.updatePluginSettingHandler = this.updatePluginSettingHandler.bind(this);
   }
 
   /**
@@ -64,15 +81,11 @@ export default class AdminAppContainer extends Container {
       siteUrl: appSettingsParams.siteUrl,
       envSiteUrl: appSettingsParams.envSiteUrl,
       isSetSiteUrl: !!appSettingsParams.siteUrl,
-      isMailerSetup: appSettingsParams.isMailerSetup,
       fromAddress: appSettingsParams.fromAddress,
-      transmissionMethod: appSettingsParams.transmissionMethod,
       smtpHost: appSettingsParams.smtpHost,
       smtpPort: appSettingsParams.smtpPort,
       smtpUser: appSettingsParams.smtpUser,
       smtpPassword: appSettingsParams.smtpPassword,
-      sesAccessKeyId: appSettingsParams.sesAccessKeyId,
-      sesSecretAccessKey: appSettingsParams.sesSecretAccessKey,
       region: appSettingsParams.region,
       customEndpoint: appSettingsParams.customEndpoint,
       bucket: appSettingsParams.bucket,
@@ -126,13 +139,6 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
-   * Change from transmission method
-   */
-  changeTransmissionMethod(transmissionMethod) {
-    this.setState({ transmissionMethod });
-  }
-
-  /**
    * Change smtp host
    */
   changeSmtpHost(smtpHost) {
@@ -158,20 +164,6 @@ export default class AdminAppContainer extends Container {
    */
   changeSmtpPassword(smtpPassword) {
     this.setState({ smtpPassword });
-  }
-
-  /**
-   * Change sesAccessKeyId
-   */
-  changeSesAccessKeyId(sesAccessKeyId) {
-    this.setState({ sesAccessKeyId });
-  }
-
-  /**
-   * Change sesSecretAccessKey
-   */
-  changeSesSecretAccessKey(sesSecretAccessKey) {
-    this.setState({ sesSecretAccessKey });
   }
 
   /**
@@ -247,59 +239,47 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
+   * Update from adress
+   * @memberOf AdminAppContainer
+   * @return {Array} Appearance
+   */
+  async updateFromAdressHandler() {
+    const response = await this.appContainer.apiv3.put('/app-settings/from-address', {
+      fromAddress: this.state.fromAddress,
+    });
+    const { mailSettingParams } = response.data;
+    return mailSettingParams;
+  }
+
+  /**
    * Update mail setting
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
    */
-  updateMailSettingHandler() {
-    if (this.state.transmissionMethod === 'smtp') {
-      return this.updateSmtpSetting();
-    }
-    return this.updateSesSetting();
-  }
-
-  /**
-   * Update smtp setting
-   * @memberOf AdminAppContainer
-   * @return {Array} Appearance
-   */
-  async updateSmtpSetting() {
-    const response = await this.appContainer.apiv3.put('/app-settings/smtp-setting', {
+  async updateMailSettingHandler() {
+    const response = await this.appContainer.apiv3.put('/app-settings/mail-setting', {
       fromAddress: this.state.fromAddress,
-      transmissionMethod: this.state.transmissionMethod,
       smtpHost: this.state.smtpHost,
       smtpPort: this.state.smtpPort,
       smtpUser: this.state.smtpUser,
       smtpPassword: this.state.smtpPassword,
     });
     const { mailSettingParams } = response.data;
-    this.setState({ isMailerSetup: mailSettingParams.isMailerSetup });
     return mailSettingParams;
   }
 
   /**
-   * Update ses setting
+   * Initialize mail setting
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
    */
-  async updateSesSetting() {
-    const response = await this.appContainer.apiv3.put('/app-settings/ses-setting', {
-      fromAddress: this.state.fromAddress,
-      transmissionMethod: this.state.transmissionMethod,
-      sesAccessKeyId: this.state.sesAccessKeyId,
-      sesSecretAccessKey: this.state.sesSecretAccessKey,
-    });
-    const { mailSettingParams } = response.data;
-    this.setState({ isMailerSetup: mailSettingParams.isMailerSetup });
+  async initializeMailSettingHandler() {
+    const response = await this.appContainer.apiv3.delete('/app-settings/mail-setting', {});
+    const {
+      mailSettingParams,
+    } = response.data;
+    this.setState(mailSettingParams);
     return mailSettingParams;
-  }
-
-  /**
-   * send test e-mail
-   * @memberOf AdminAppContainer
-   */
-  async sendTestEmail() {
-    return this.appContainer.apiv3.post('/app-settings/smtp-test');
   }
 
   /**

@@ -75,7 +75,6 @@ class CopyDropdown extends React.Component {
   }
 
   generatePermalink() {
-    const { origin } = window.location;
     const { pageId, isShareLinkMode } = this.props;
 
     if (pageId == null) {

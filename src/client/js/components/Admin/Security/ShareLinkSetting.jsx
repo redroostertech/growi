@@ -11,7 +11,7 @@ import AppContainer from '../../../services/AppContainer';
 import AdminGeneralSecurityContainer from '../../../services/AdminGeneralSecurityContainer';
 
 import DeleteAllShareLinksModal from './DeleteAllShareLinksModal';
-import ShareLinkList from '../../ShareLink/ShareLinkList';
+import ShareLinkList from '../../ShareLinkList';
 
 class ShareLinkSetting extends React.Component {
 
@@ -66,7 +66,6 @@ class ShareLinkSetting extends React.Component {
 
   async deleteLinkById(shareLinkId) {
     const { t, appContainer, adminGeneralSecurityContainer } = this.props;
-    const { shareLinksActivePage } = adminGeneralSecurityContainer.state;
 
     try {
       const res = await appContainer.apiv3Delete(`/share-links/${shareLinkId}`);
@@ -77,57 +76,53 @@ class ShareLinkSetting extends React.Component {
       toastError(err);
     }
 
-    this.getShareLinkList(shareLinksActivePage);
+    this.getShareLinkList(adminGeneralSecurityContainer.state.shareLinksActivePage);
   }
 
 
   render() {
     const { t, adminGeneralSecurityContainer } = this.props;
-    const {
-      shareLinks, shareLinksActivePage, totalshareLinks, shareLinksPagingLimit,
-    } = adminGeneralSecurityContainer.state;
 
-    function pager() {
-      if (shareLinks.length === 0) {
-        return null;
-      }
-      return (
+    const pager = (
+      <div className="pull-right my-3">
         <PaginationWrapper
-          activePage={shareLinksActivePage}
+          activePage={adminGeneralSecurityContainer.state.shareLinksActivePage}
           changePage={this.getShareLinkList}
-          totalItemsCount={totalshareLinks}
-          pagingLimit={shareLinksPagingLimit}
-          align="right"
+          totalItemsCount={adminGeneralSecurityContainer.state.totalshareLinks}
+          pagingLimit={adminGeneralSecurityContainer.state.shareLinksPagingLimit}
         />
-      );
-    }
+      </div>
+    );
 
-    return (
-      <Fragment>
-        <div className="mb-3">
+    const deleteAllButton = (
+      adminGeneralSecurityContainer.state.shareLinks.length > 0
+        ? (
           <button
             className="pull-right btn btn-danger"
-            disabled={shareLinks.length === 0}
             type="button"
             onClick={this.showDeleteConfirmModal}
           >
             {t('share_links.delete_all_share_links')}
           </button>
+        )
+        : (
+          <p className="pull-right mr-2">{t('share_links.No_share_links')}</p>
+        )
+    );
+
+    return (
+      <Fragment>
+        <div className="mb-3">
+          {deleteAllButton}
           <h2 className="alert-anchor border-bottom">{t('share_links.share_link_management')}</h2>
         </div>
+
         {pager}
-
-        {(shareLinks.length !== 0) ? (
-          <ShareLinkList
-            shareLinks={shareLinks}
-            onClickDeleteButton={this.deleteLinkById}
-            isAdmin
-          />
-          )
-          : (<p className="text-center">{t('share_links.No_share_links')}</p>
-          )
-        }
-
+        <ShareLinkList
+          shareLinks={adminGeneralSecurityContainer.state.shareLinks}
+          onClickDeleteButton={this.deleteLinkById}
+          isAdmin
+        />
 
         <DeleteAllShareLinksModal
           isOpen={this.state.isDeleteConfirmModalShown}
