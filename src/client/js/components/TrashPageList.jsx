@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
+import PageListIcon from './Icons/PageListIcon';
 
 import { withUnstatedContainers } from './UnstatedUtils';
 
@@ -10,9 +12,13 @@ import PageContainer from '../services/PageContainer';
 
 
 const TrashPageList = (props) => {
+  const { t } = props;
 
   return (
-    <div>This is Trash page</div>
+    <div>
+      {t('page_list')}
+      <PageListIcon />
+    </div>
   );
 };
 
@@ -20,8 +26,9 @@ const PageListWrapper = withUnstatedContainers(TrashPageList, [AppContainer, Pag
 
 
 TrashPageList.propTypes = {
+  t: PropTypes.func.isRequired, //  i18next
   appContainer: PropTypes.instanceOf(AppContainer),
   pageContainer: PropTypes.instanceOf(PageContainer),
 };
 
-export default PageListWrapper;
+export default withTranslation()(PageListWrapper);
