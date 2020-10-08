@@ -74,6 +74,8 @@ Object.assign(componentMappings, {
 
   'trash-page-alert': <TrashPageAlert />,
 
+  'trash-page-list': <TrashPageList />,
+
   'page-timeline': <PageTimeline />,
 
   'personal-setting': <PersonalSettings crowi={personalContainer} />,
@@ -93,7 +95,7 @@ if (pageContainer.state.pageId != null) {
 
     'user-created-list': <RecentCreated userId={pageContainer.state.creator._id} />,
     'user-draft-list': <MyDraftList />,
-    'trash-page-list': <TrashPageList />,
+
   });
 }
 if (pageContainer.state.path != null) {

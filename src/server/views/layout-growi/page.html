@@ -21,12 +21,13 @@
     </div>
 
   </div>
+
 {% endblock %}
 
 
 {% block content_main_after %}
+
   {% include 'widget/comments.html' %}
-  <div id="trash-page-list"></div>
 
   {% if page %}
     {% include '../widget/page_attachments.html' %}
