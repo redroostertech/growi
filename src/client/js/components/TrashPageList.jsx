@@ -8,14 +8,14 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 
-// import PaginationWrapper from './PaginationWrapper';
+// import PaginationWrapper from './PaginationWrapper';[TODO]
 
 
 const TrashPageList = (props) => {
   const { t } = props;
 
   return (
-    <div>
+    <div className="grw-trash-page-list">
       {t('page_list')}
       <PageListIcon />
     </div>
