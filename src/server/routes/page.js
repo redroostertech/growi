@@ -255,7 +255,7 @@ module.exports = function(crowi, app) {
 
   async function addRenderVarsForDescendants(renderVars, path, requestUser, offset, limit, isRegExpEscapedFromPath) {
     const SEENER_THRESHOLD = 10;
-
+    // ここ
     const queryOptions = {
       offset,
       limit,
@@ -485,6 +485,7 @@ module.exports = function(crowi, app) {
   /* eslint-disable no-else-return */
   actions.trashPageShowWrapper = function(req, res) {
     // Crowi behavior for '/trash/*'
+    // ここ
     return actions.deletedPageListShow(req, res);
   };
   /* eslint-enable no-else-return */

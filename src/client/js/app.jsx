@@ -16,6 +16,7 @@ import PageTimeline from './components/PageTimeline';
 import CommentEditorLazyRenderer from './components/PageComment/CommentEditorLazyRenderer';
 import PageManagement from './components/Page/PageManagement';
 import TrashPageAlert from './components/Page/TrashPageAlert';
+import TrashPageList from './components/TrashPageList';
 import PageStatusAlert from './components/PageStatusAlert';
 import RecentCreated from './components/RecentCreated/RecentCreated';
 import MyDraftList from './components/MyDraftList/MyDraftList';
@@ -92,6 +93,7 @@ if (pageContainer.state.pageId != null) {
 
     'user-created-list': <RecentCreated userId={pageContainer.state.creator._id} />,
     'user-draft-list': <MyDraftList />,
+    'trash-page-list': <TrashPageList />,
   });
 }
 if (pageContainer.state.path != null) {
