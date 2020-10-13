@@ -8,15 +8,14 @@ import { withUnstatedContainers } from './UnstatedUtils';
 import AppContainer from '../services/AppContainer';
 import PageContainer from '../services/PageContainer';
 import CustomNavbar from './CustomNavbar';
-import TrashPageList from './TrashPageList';
+import PageList from './PageList';
 
 
 const navTabMapping = {
   pagelist: {
     icon: <PageListIcon />,
     i18n: 'page_list',
-    // [TODO: show trash page list by gw4064]
-    tabContent: <TrashPageList />,
+    tabContent: <PageList />,
     index: 0,
   },
 };
